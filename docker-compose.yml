@@ -1,0 +1,10 @@
+services:
+  web:
+    build:
+      context: .
+    environment:
+      HOST: 0.0.0.0
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - '3000:3000'

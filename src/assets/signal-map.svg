@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" role="img" aria-labelledby="title desc">
+  <title id="title">Abstract deployment signal map</title>
+  <desc id="desc">A layered technical map with routes, nodes, and deployment markers.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fffdf7"/>
+      <stop offset=".58" stop-color="#eaf7f3"/>
+      <stop offset="1" stop-color="#f9e6dc"/>
+    </linearGradient>
+    <linearGradient id="route" x1="80" x2="880" y1="620" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#121212"/>
+      <stop offset=".44" stop-color="#0f8f83"/>
+      <stop offset="1" stop-color="#e6402f"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#161616" stroke-opacity=".08" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="960" height="720" rx="44" fill="url(#paper)"/>
+  <rect width="960" height="720" rx="44" fill="url(#grid)"/>
+  <path d="M90 578C216 442 264 602 380 470c81-92 93-266 228-248 87 12 111 91 242-54" fill="none" stroke="url(#route)" stroke-width="18" stroke-linecap="round"/>
+  <path d="M118 130h724M118 270h724M118 410h724M118 550h724M206 86v548M370 86v548M534 86v548M698 86v548" fill="none" stroke="#111" stroke-opacity=".14" stroke-width="2"/>
+  <g fill="#111">
+    <circle cx="90" cy="578" r="22"/>
+    <circle cx="380" cy="470" r="22"/>
+    <circle cx="608" cy="222" r="22"/>
+    <circle cx="850" cy="168" r="22"/>
+  </g>
+  <g fill="#fff">
+    <circle cx="90" cy="578" r="7"/>
+    <circle cx="380" cy="470" r="7"/>
+    <circle cx="608" cy="222" r="7"/>
+    <circle cx="850" cy="168" r="7"/>
+  </g>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="26" font-weight="700" fill="#111">
+    <text x="116" y="586">dev</text>
+    <text x="408" y="478">build</text>
+    <text x="636" y="230">image</text>
+    <text x="744" y="125">run</text>
+  </g>
+  <g fill="none" stroke="#111" stroke-opacity=".72" stroke-width="3">
+    <path d="M715 114h118v54"/>
+    <path d="M138 602h115"/>
+    <path d="M430 494h124v-52"/>
+  </g>
+  <g transform="translate(656 472)">
+    <rect width="184" height="88" rx="18" fill="#111"/>
+    <text x="28" y="38" fill="#fff" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700">PORT</text>
+    <text x="28" y="66" fill="#9fe6d8" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" font-weight="800">3000</text>
+  </g>
+</svg>

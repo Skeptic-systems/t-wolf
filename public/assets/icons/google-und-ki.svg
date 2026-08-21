@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <title>Gefunden werden bei Google und bei der KI</title>
+  <style>
+    path,circle,rect,ellipse{fill:none;stroke:#CBD3E0;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+    .g{stroke:url(#grad)}
+    .cy{stroke:#F9613A}
+    .vi{stroke:#D9451F}
+    .thin{stroke-width:1.15}
+    .dash{stroke-dasharray:2 3.2}
+    .fcy{fill:#F9613A;stroke:none}
+    .fvi{fill:#D9451F;stroke:none}
+    .fg{fill:url(#grad);stroke:none}
+    .fb{fill:#CBD3E0;stroke:none}
+  </style>
+  <defs>
+    <linearGradient id="grad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F9613A"/>
+      <stop offset="1" stop-color="#D9451F"/>
+    </linearGradient>
+  </defs>
+  <circle cx="24" cy="26" r="13"/>
+        <path d="M33.5 35.5 L45 47"/>
+        <path class="g" d="M24 17.5 a6 6 0 0 1 6 6 c0 4.5 -6 9.5 -6 9.5 s-6 -5 -6 -9.5 a6 6 0 0 1 6 -6 z"/>
+        <circle class="g" cx="24" cy="23.5" r="1.9"/>
+        <rect class="g" x="46" y="10" width="12" height="12" rx="3"/>
+        <path class="g thin" d="M46 13 h-3 M46 19 h-3 M58 13 h3 M58 19 h3 M49 10 v-3 M55 10 v-3 M49 22 v3 M55 22 v3"/>
+        <path class="fcy" d="M52 12.8 l1 2.2 2.2 1 -2.2 1 -1 2.2 -1 -2.2 -2.2 -1 2.2 -1 z"/>
+        <circle class="fvi" cx="51.6" cy="37.6" r="1.05"/>
+        <circle class="fvi" cx="54" cy="36.9" r="1.05"/>
+        <circle class="fvi" cx="56.4" cy="37.6" r="1.05"/>
+        <ellipse class="fvi" cx="54" cy="41" rx="2.3" ry="1.9"/>
+</svg>

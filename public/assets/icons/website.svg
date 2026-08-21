@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
+  <title>Website</title>
+  <style>
+    path,circle,rect,ellipse{fill:none;stroke:#CBD3E0;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+    .g{stroke:url(#grad)}
+    .cy{stroke:#F9613A}
+    .vi{stroke:#D9451F}
+    .thin{stroke-width:1.15}
+    .dash{stroke-dasharray:2 3.2}
+    .fcy{fill:#F9613A;stroke:none}
+    .fvi{fill:#D9451F;stroke:none}
+    .fg{fill:url(#grad);stroke:none}
+    .fb{fill:#CBD3E0;stroke:none}
+  </style>
+  <defs>
+    <linearGradient id="grad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F9613A"/>
+      <stop offset="1" stop-color="#D9451F"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="12" width="52" height="40" rx="4"/>
+        <path d="M6 21 H58"/>
+        <circle class="fcy" cx="11.5" cy="16.5" r="1.4"/>
+        <circle class="fvi" cx="16.5" cy="16.5" r="1.4"/>
+        <circle cx="21.5" cy="16.5" r="1.4"/>
+        <rect class="thin" x="26" y="14.5" width="28" height="4" rx="2"/>
+        <rect class="thin" x="10" y="25" width="20" height="13" rx="1.5"/>
+        <path class="thin" d="M11.5 36.5 l4.5 -6 3 3.5 2.5 -3 5 5.5"/>
+        <circle class="thin" cx="26" cy="28" r="1.3"/>
+        <path class="thin" d="M34 27 h18 M34 31 h14 M34 35 h18"/>
+        <rect class="vi" x="34" y="39" width="12" height="5" rx="2.5"/>
+        <path d="M49 40 v8.6 l2.3 -2.1 1.4 3.2 1.8 -0.85 -1.4 -3.1 2.9 -0.25 z"/>
+        <path class="g" d="M13 44.5 l-3 3 3 3 M20 44.5 l3 3 -3 3"/>
+</svg>
