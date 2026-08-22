@@ -1,10 +1,13 @@
 import { Link } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import { LOCALES, localeLabels } from '../i18n'
-import type { Locale, SiteCopy } from '../i18n'
+import { useEffect } from 'react'
+import type { SiteCopy } from '../i18n'
 import { useLocale } from '../hooks/useLocale'
 import { useLocalizedSeo } from '../hooks/useLocalizedSeo'
 import { SignatureBand } from './SignatureBand'
+import { SiteHeader } from './SiteHeader'
+import { Testimonials } from './Testimonials'
+import { TiltCard } from './TiltCard'
+import { cleanPath, scrollToSection } from '../scroll'
 
 const contactLinks = {
   email: 'mailto:digitalwerkstatt@t-wolf.it',
@@ -14,9 +17,21 @@ const contactLinks = {
     'https://wa.me/393513642110?text=Hallo%21%20Ich%20habe%20eine%20Frage%20zu%20meinem%20Betrieb.',
 }
 
+/**
+ * Section order follows the shape of the sales conversation this business
+ * actually has, rather than the order the material happened to be written in:
+ *
+ *   who we are  ->  the problem you recognise  ->  how we think about it
+ *   ->  what we do  ->  how it runs  ->  proof  ->  what it costs you
+ *   ->  who you'd be working with  ->  objections  ->  get in touch
+ *
+ * The proof block is deliberately one run of three: worked cases first, because
+ * they carry the detail, then the client list, then the quotes. Money (funding)
+ * sits after the proof and before the people, so it lands once the reader is
+ * already convinced but has not yet reached the contact form.
+ */
 export function HomePage() {
   const { copy, locale, setLocale } = useLocale()
-  const [menuOpen, setMenuOpen] = useState(false)
 
   useLocalizedSeo('home', locale)
 
@@ -38,22 +53,16 @@ export function HomePage() {
       >
         {copy.nav.skip}
       </button>
-      <SiteHeader
-        copy={copy}
-        locale={locale}
-        menuOpen={menuOpen}
-        setMenuOpen={setMenuOpen}
-        setLocale={setLocale}
-        toggleMenu={() => setMenuOpen((open) => !open)}
-      />
+      <SiteHeader copy={copy} locale={locale} setLocale={setLocale} />
       <main id="main">
         <Hero copy={copy} />
-        <SignatureBand copy={copy} />
         <Recognition copy={copy} />
+        <SignatureBand copy={copy} />
+        <Services copy={copy} />
         <Process copy={copy} />
         <Workshop copy={copy} />
-        <Services copy={copy} />
         <References copy={copy} />
+        <Testimonials copy={copy} />
         <Funding copy={copy} />
         <Team copy={copy} />
         <Faq copy={copy} />
@@ -61,135 +70,6 @@ export function HomePage() {
       </main>
       <Footer copy={copy} />
     </>
-  )
-}
-
-function scrollToSection(id: string) {
-  const element = document.getElementById(id)
-  const shouldCleanHash = Boolean(window.location.hash)
-
-  if (element) {
-    const headerHeight =
-      document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 0
-    const top = Math.max(
-      0,
-      element.getBoundingClientRect().top + window.scrollY - headerHeight,
-    )
-
-    window.scrollTo({ top, behavior: 'smooth' })
-  } else {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  if (shouldCleanHash) {
-    window.setTimeout(() => {
-      window.history.replaceState(null, '', cleanPath())
-    }, 0)
-  }
-}
-
-function cleanPath() {
-  return `${window.location.pathname}${window.location.search}`
-}
-
-function SiteHeader({
-  copy,
-  locale,
-  menuOpen,
-  setMenuOpen,
-  setLocale,
-  toggleMenu,
-}: {
-  copy: SiteCopy
-  locale: Locale
-  menuOpen: boolean
-  setMenuOpen: (open: boolean) => void
-  setLocale: (locale: Locale) => void
-  toggleMenu: () => void
-}) {
-  const navItems = [
-    ['erkennen', copy.nav.known],
-    ['ablauf', copy.nav.process],
-    ['leistungen', copy.nav.services],
-    ['referenzen', copy.nav.references],
-    ['team', copy.nav.team],
-  ]
-
-  return (
-    <header className="site-header">
-      <div className="wrap bar">
-        <button
-          className="logo logo-button"
-          onClick={() => scrollToSection('top')}
-          type="button"
-          aria-label="T-Wolf.it"
-        >
-          <img src="/assets/img/logo-wortmarke.png" alt="T-Wolf.it" />
-        </button>
-        <nav className={menuOpen ? 'offen' : undefined} aria-label="Main">
-          {navItems.map(([id, label]) => (
-            <button
-              key={id}
-              onClick={() => {
-                scrollToSection(id)
-                setMenuOpen(false)
-              }}
-              type="button"
-            >
-              {label}
-            </button>
-          ))}
-          <button
-            className="btn btn-p nav-cta"
-            onClick={() => {
-              scrollToSection('kontakt')
-              setMenuOpen(false)
-            }}
-            type="button"
-          >
-            {copy.nav.cta}
-          </button>
-        </nav>
-        <LanguageSwitcher copy={copy} locale={locale} setLocale={setLocale} />
-        <button className="menu-toggle" onClick={toggleMenu} type="button">
-          {copy.nav.menu}
-        </button>
-        <button
-          className="btn btn-p btn-sm hdr-cta"
-          onClick={() => scrollToSection('kontakt')}
-          type="button"
-        >
-          {copy.nav.cta}
-        </button>
-      </div>
-    </header>
-  )
-}
-
-function LanguageSwitcher({
-  copy,
-  locale,
-  setLocale,
-}: {
-  copy: SiteCopy
-  locale: Locale
-  setLocale: (locale: Locale) => void
-}) {
-  return (
-    <div className="langs" aria-label={copy.nav.language}>
-      {LOCALES.map((language, index) => (
-        <span className="lang-item" key={language}>
-          {index > 0 ? <span aria-hidden="true">/</span> : null}
-          <button
-            aria-current={language === locale ? 'true' : undefined}
-            onClick={() => setLocale(language)}
-            type="button"
-          >
-            {localeLabels[language]}
-          </button>
-        </span>
-      ))}
-    </div>
   )
 }
 
@@ -226,10 +106,15 @@ function Hero({ copy }: { copy: SiteCopy }) {
           </p>
         </div>
         <div className="hero-photo">
-          <img
-            alt="Thomas Wolfsteiner, T-Wolf.it Digitalwerkstatt"
-            src="/assets/img/thomas-hero.webp"
-          />
+          <TiltCard className="hero-card">
+            <img
+              alt="Thomas Wolfsteiner, T-Wolf.it Digitalwerkstatt"
+              src="/assets/img/thomas-hero.webp"
+            />
+            <span className="hero-card-tag" aria-hidden="true">
+              {copy.hero.place}
+            </span>
+          </TiltCard>
           <div className="hero-sig hero-sig-stack">
             <img className="sig-marke" alt="" src="/assets/img/bildmarke.png" />
             <span className="hero-cap">
@@ -473,17 +358,6 @@ function References({ copy }: { copy: SiteCopy }) {
               <div key={reference.title}>{content}</div>
             )
           })}
-        </div>
-        <div className="voices">
-          {copy.references.voices.map(([quote, name, role]) => (
-            <article className="voice" key={name}>
-              <p>{quote}</p>
-              <span className="who">
-                <b>{name}</b>
-                {role}
-              </span>
-            </article>
-          ))}
         </div>
       </div>
     </section>

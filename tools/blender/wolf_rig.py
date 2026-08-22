@@ -330,6 +330,9 @@ def main():
         export_yup=True,
         export_cameras=False,
         export_lights=False,
+        # No material samples a texture, so the UV set is pure payload. At this
+        # vertex count dropping it is worth ~150 KB of download.
+        export_texcoords=False,
     )
     print("EXPORTED", out, os.path.getsize(out))
     print("CLIPS", [a.name for a, _ in actions])

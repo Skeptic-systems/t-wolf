@@ -9,7 +9,8 @@ def out_path(relative):
     full = _os.path.join(root, *relative.split("/"))
     _os.makedirs(_os.path.dirname(full), exist_ok=True)
     return full
-, math, os
+import math
+import os
 from mathutils import Vector
 
 bpy.ops.wm.open_mainfile(filepath=out_path("build/wolf_rigged.blend"))

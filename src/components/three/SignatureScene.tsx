@@ -8,6 +8,7 @@ import type { PerfTier } from './brand'
 import { Wolf } from './Wolf'
 import { NodeField } from './NodeField'
 import { Panels } from './Panels'
+import { TechField } from './TechField'
 
 /**
  * Camera choreography.
@@ -174,7 +175,7 @@ function Lighting({ tier }: { tier: PerfTier }) {
       />
       {/* Warm brand rim from behind. Directional rather than a spot, because a
           spot pools a large orange blob on the floor and reads cheap. */}
-      <directionalLight ref={rim} color={brand.orange} intensity={0.45} />
+      <directionalLight ref={rim} color={brand.orange} intensity={0.34} />
       {/* Cool fill lifting the shadow side just off black. */}
       <directionalLight ref={fill} color={brand.dim} intensity={0.5} />
 
@@ -250,8 +251,8 @@ function Floor({ tier }: { tier: PerfTier }) {
         <meshStandardMaterial
           color="#05080e"
           metalness={0.8}
-          roughness={0.5}
-          envMapIntensity={0.12}
+          roughness={0.62}
+          envMapIntensity={0.1}
         />
       </mesh>
       <ContactShadows
@@ -311,6 +312,7 @@ export default function SignatureScene({
       <Suspense fallback={null}>
         <Wolf progress={progress} tier={tier} />
       </Suspense>
+      <TechField progress={progress} tier={tier} />
       <NodeField progress={progress} tier={tier} />
       <Panels progress={progress} tier={tier} />
       <Rig progress={progress} pointer={pointer} />

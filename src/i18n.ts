@@ -32,7 +32,9 @@ export const pages: Record<PageKey, { path: string }> = {
 }
 
 export const siteBaseUrl = 'https://t-wolf.it'
-export const socialImagePath = '/social-preview.svg'
+export const socialImagePath = '/assets/img/logo-wortmarke.png'
+export const socialImageWidth = '722'
+export const socialImageHeight = '181'
 
 export type SiteCopy = {
   seo: Record<PageKey, { title: string; description: string }>
@@ -107,6 +109,9 @@ export type SiteCopy = {
     text: string
     voices: Array<[string, string, string]>
   }
+  /** Heading copy for the testimonial marquee. The quotes it renders live on
+   *  `references.voices`, so there is one place to edit a customer quote. */
+  voices: Record<'eyebrow' | 'title' | 'text', string>
   funding: Record<'eyebrow' | 'title' | 'text' | 'number' | 'label', string>
   team: {
     eyebrow: string
@@ -288,7 +293,11 @@ export const content = {
           'Website, Social Media und Technik greifen ineinander, statt nebeneinanderher zu laufen.',
         ],
         [
-          '03 — In Bewegung',
+          '03 — Gebaut',
+          'Was wir bauen, bauen wir selbst. Kein Baukasten, den nachher keiner mehr versteht.',
+        ],
+        [
+          '04 — In Bewegung',
           'Und wir bleiben dran, auch wenn die Seite längst online ist.',
         ],
       ],
@@ -393,6 +402,11 @@ export const content = {
           'Freitag Expert IT Solutions',
         ],
       ],
+    },
+    voices: {
+      eyebrow: 'Stimmen',
+      title: 'Was unsere Kundinnen und Kunden sagen.',
+      text: 'Keine ausgedachten Zitate. Das sind Sätze aus echten Gesprächen, so wie sie gefallen sind.',
     },
     funding: {
       eyebrow: 'Förderung',
@@ -702,7 +716,11 @@ export const content = {
           'Website, social media and technology work together instead of side by side.',
         ],
         [
-          '03 — In motion',
+          '03 — Built',
+          'What we build, we build ourselves. No page builder that nobody can maintain later.',
+        ],
+        [
+          '04 — In motion',
           'And we stay on it, long after the site has gone live.',
         ],
       ],
@@ -872,6 +890,11 @@ export const content = {
           'Freitag Expert IT Solutions',
         ],
       ],
+    },
+    voices: {
+      eyebrow: 'In their words',
+      title: 'What our customers say.',
+      text: 'No invented quotes. These are sentences from real conversations, just as they were said.',
     },
     funding: {
       eyebrow: 'Funding',
@@ -1069,7 +1092,11 @@ content.it = {
         'Sito web, social media e tecnologia lavorano insieme, non uno accanto all’altro.',
       ],
       [
-        '03 — In movimento',
+        '03 — Costruiti',
+        'Quello che costruiamo lo costruiamo noi. Nessun editor che poi nessuno sa gestire.',
+      ],
+      [
+        '04 — In movimento',
         'E restiamo al tuo fianco, molto dopo che il sito è online.',
       ],
     ],
@@ -1176,6 +1203,11 @@ content.it = {
         'Freitag Expert IT Solutions',
       ],
     ],
+  },
+  voices: {
+    eyebrow: 'Le loro parole',
+    title: 'Cosa dicono i nostri clienti.',
+    text: 'Nessuna citazione inventata. Sono frasi di conversazioni reali, cosi come sono state dette.',
   },
   funding: {
     eyebrow: 'Contributi',
@@ -1422,9 +1454,11 @@ export function getRouteHead(page: PageKey, locale: Locale = FALLBACK_LOCALE) {
       { property: 'og:description', content: seo.description },
       { property: 'og:url', content: url },
       { property: 'og:image', content: image },
-      { property: 'og:image:width', content: '1200' },
-      { property: 'og:image:height', content: '630' },
+      { property: 'og:image:width', content: socialImageWidth },
+      { property: 'og:image:height', content: socialImageHeight },
+      { property: 'og:image:type', content: 'image/png' },
       { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:url', content: url },
       { name: 'twitter:title', content: seo.title },
       { name: 'twitter:description', content: seo.description },
       { name: 'twitter:image', content: image },

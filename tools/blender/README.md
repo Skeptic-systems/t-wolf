@@ -35,9 +35,18 @@ mesh from the parameters at the top of that file.
 
 ## Notes
 
-- The mesh is kept near 2,800 triangles and the GLB is uncompressed (~590 KB).
-  Draco was deliberately not used: at this triangle count the decoder would cost
-  more than it saves.
+- The mesh lands near 7,700 triangles and the GLB is uncompressed (~1.15 MB).
+  Draco was deliberately not used: the decoder would have to be fetched from a
+  third-party CDN, which this site does not do. The band lazy-loads the GLB only
+  once it is roughly a screen away, so the cost never lands on first paint.
+- `refine` subdivides well past the triangle budget and collapses back down.
+  The collapse is curvature-aware, so the budget is spent on the skull, ears and
+  joints instead of being spread evenly over flat flanks.
+- `detail_pass` carves anatomy (brow ridge, stop, shoulder blade, haunch mass,
+  brush tail, dorsal crest); `fur_pass` then breaks the outline into tufts by
+  pushing _clustered_ vertices outward along the body radius. On a flat-shaded
+  model the silhouette carries most of the perceived detail, so the tufts buy
+  more than extra surface would.
 - Limb hardware is bound rigidly via `HW_*` vertex groups written during the
   mesh build and replayed after the armature bind. Bone-heat weighting cannot
   handle those loose parts and lets the paws drift off the legs.

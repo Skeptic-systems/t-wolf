@@ -27,6 +27,7 @@ def out_path(relative):
     return full
 
 import bmesh
+import math
 from mathutils import Vector
 
 # Y = forward (nose), Z = up, ground at Z = 0.
@@ -81,6 +82,44 @@ for side, sx in (("L", 1.0), ("R", -1.0)):
             ],
         )
     )
+
+
+def falloff(value, centre, width):
+    """Triangular 1..0 weight, used to fence every shaping rule to a region."""
+    return max(0.0, 1.0 - abs(value - centre) / width)
+
+
+def spine_axis(y):
+    """Height of the body centre line at a given depth along the wolf.
+
+    Shaping rules that scale a vertex "outwards" need something to scale away
+    from. Using the spine rather than z=0 is what keeps the ruff growing around
+    the neck instead of sliding up it.
+    """
+    pts = sorted((co[1], co[2]) for _, co, _ in SPINE)
+    if y <= pts[0][0]:
+        return pts[0][1]
+    if y >= pts[-1][0]:
+        return pts[-1][1]
+    for (y0, z0), (y1, z1) in zip(pts, pts[1:]):
+        if y0 <= y <= y1 and y1 > y0:
+            return z0 + (z1 - z0) * (y - y0) / (y1 - y0)
+    return pts[-1][1]
+
+
+def clump(co, cell):
+    """Deterministic 0..1 value that is constant within a small cell.
+
+    Quantising the position first is what turns per-vertex noise into tufts:
+    neighbouring vertices land in the same cell and get pushed out together, so
+    the outline breaks into clumps of guard hair rather than into sandpaper.
+    """
+    i = int(math.floor(co.x / cell)) * 73856093
+    j = int(math.floor(co.y / cell)) * 19349663
+    k = int(math.floor(co.z / cell)) * 83492791
+    h = (i ^ j ^ k) & 0x7FFFFFFF
+    h = (h * 1103515245 + 12345) & 0x7FFFFFFF
+    return h / 0x7FFFFFFF
 
 
 def build_skeleton_mesh():
@@ -138,13 +177,18 @@ def apply_skin(obj, radius_by_index):
     bpy.ops.object.modifier_apply(modifier="Skin")
 
 
-def refine(obj, target_tris=2600):
-    """Round the blocky skin output, then collapse back to faceted triangles."""
+def refine(obj, target_tris=6800):
+    """Round the blocky skin output, then collapse back to faceted triangles.
+
+    Subdividing further than the budget and collapsing back is deliberate: the
+    collapse is curvature-aware, so the extra triangles end up in the skull,
+    ears and joints rather than being spread evenly over flat flanks.
+    """
     bpy.context.view_layer.objects.active = obj
 
     sub = obj.modifiers.new("Subdivision", "SUBSURF")
-    sub.levels = 2
-    sub.render_levels = 2
+    sub.levels = 3
+    sub.render_levels = 3
     bpy.ops.object.modifier_apply(modifier="Subdivision")
 
     tri = obj.modifiers.new("Triangulate", "TRIANGULATE")
@@ -165,10 +209,6 @@ def refine(obj, target_tris=2600):
 
 def shape_pass(obj):
     """Deepen the ribcage, build the skull and flatten the ears into blades."""
-
-    def falloff(value, centre, width):
-        return max(0.0, 1.0 - abs(value - centre) / width)
-
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     for v in bm.verts:
@@ -205,6 +245,101 @@ def shape_pass(obj):
             centre = 0.925
             v.co.y = centre + (v.co.y - centre) * (1.0 - 0.58 * t)
             v.co.x *= 1.0 + 0.26 * t
+    bm.to_mesh(obj.data)
+    bm.free()
+
+
+def detail_pass(obj):
+    """Carve the features that separate a wolf from a generic four-legged dog.
+
+    These rules only work because `refine` now leaves enough triangles in the
+    skull and hindquarters to move independently; at the old budget the same
+    offsets just dented the silhouette.
+    """
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    for v in bm.verts:
+        # Brow ridge. A wolf's eyes sit under a shelf, and that shelf is most
+        # of what makes the face read as watchful rather than friendly.
+        if 1.00 < v.co.y < 1.18 and v.co.z > 1.18 and abs(v.co.x) < 0.18:
+            v.co.z += 0.026 * falloff(v.co.y, 1.09, 0.09)
+            v.co.x *= 1.0 + 0.05 * falloff(v.co.y, 1.09, 0.09)
+
+        # The stop: the dip between brow and muzzle. Without it the head is a
+        # single cone and the eyes have nothing to sit against.
+        if 1.13 < v.co.y < 1.25 and v.co.z > 1.12:
+            v.co.z -= 0.034 * falloff(v.co.y, 1.19, 0.06)
+
+        # Blunt nose pad, instead of letting the muzzle taper to a point.
+        if v.co.y > 1.29:
+            t = min(1.0, (v.co.y - 1.29) / 0.09)
+            v.co.x *= 1.0 + 0.26 * t
+            v.co.z -= 0.014 * t
+
+        # Shoulder blade breaking the line of the ruff.
+        blade = falloff(v.co.y, 0.38, 0.17) * falloff(v.co.z, 0.94, 0.26)
+        if blade > 0.0 and abs(v.co.x) > 0.11:
+            v.co.x *= 1.0 + 0.10 * blade
+
+        # Heavier hindquarters: the rear is a wolf's engine and has to read as
+        # mass, otherwise the walk looks like it is being dragged.
+        haunch = falloff(v.co.y, -0.48, 0.26) * falloff(v.co.z, 0.72, 0.42)
+        if haunch > 0.0:
+            v.co.x *= 1.0 + 0.12 * haunch
+            v.co.z += 0.022 * haunch
+
+        # Brush tail: heavy through the middle, fine at the tip.
+        if v.co.y < -0.58:
+            t = falloff(v.co.y, -0.86, 0.34)
+            axis = spine_axis(v.co.y)
+            v.co.x *= 1.0 + 0.30 * t
+            v.co.z = axis + (v.co.z - axis) * (1.0 + 0.30 * t)
+
+        # Dorsal crest of raised guard hair along the topline.
+        if abs(v.co.x) < 0.10 and -0.36 < v.co.y < 0.40:
+            if v.co.z > spine_axis(v.co.y) + 0.15:
+                v.co.z += 0.013 * falloff(v.co.x, 0.0, 0.10)
+    bm.to_mesh(obj.data)
+    bm.free()
+
+
+def fur_pass(obj):
+    """Break the outline into tufts of guard hair.
+
+    On a flat-shaded model the silhouette carries almost all of the perceived
+    detail, so pushing clustered vertices out along the body radius buys more
+    than any amount of extra surface would. Facet normals are recomputed from
+    the moved geometry, so the tufts catch the key light individually.
+    """
+    regions = (
+        # (centre y, width, strength) -- neck and shoulder ruff, the widest
+        # part of a wolf's outline, then cheeks, trousers and tail.
+        (0.54, 0.36, 1.00),
+        (0.94, 0.22, 0.60),
+        (-0.46, 0.28, 0.70),
+        (-0.95, 0.40, 0.45),
+    )
+
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    for v in bm.verts:
+        weight = 0.0
+        for centre, width, strength in regions:
+            weight = max(weight, strength * falloff(v.co.y, centre, width))
+        # Legs below the ruff stay machined: the contrast between smooth
+        # hardware and shaggy body is the whole point of the design.
+        if v.co.z < 0.42:
+            weight *= falloff(v.co.z, 0.42, 0.42)
+        if weight <= 0.002:
+            continue
+
+        out = v.co - Vector((0.0, v.co.y, spine_axis(v.co.y)))
+        if out.length < 1e-4:
+            continue
+        out.normalize()
+
+        tuft = clump(v.co, 0.078)
+        v.co += out * weight * (0.008 + 0.058 * tuft * tuft)
     bm.to_mesh(obj.data)
     bm.free()
 
@@ -338,7 +473,7 @@ def add_limb_hardware():
 def add_eyes():
     eyes = []
     for sx in (1.0, -1.0):
-        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, radius=0.030)
+        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=3, radius=0.032)
         eye = bpy.context.object
         eye.name = "WolfEye_%s" % ("L" if sx > 0 else "R")
         eye.location = (sx * 0.112, 1.088, 1.238)
@@ -376,6 +511,8 @@ def build():
     apply_skin(obj, radii)
     refine(obj)
     shape_pass(obj)
+    detail_pass(obj)
+    fur_pass(obj)
 
     hardware = add_limb_hardware()
     bpy.ops.object.select_all(action="DESELECT")

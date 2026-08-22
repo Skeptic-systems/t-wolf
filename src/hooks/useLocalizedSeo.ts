@@ -5,7 +5,9 @@ import {
   content,
   pages,
   siteBaseUrl,
+  socialImageHeight,
   socialImagePath,
+  socialImageWidth,
 } from '../i18n'
 
 const metaSelectors = {
@@ -14,6 +16,10 @@ const metaSelectors = {
   ogTitle: 'meta[property="og:title"]',
   ogDescription: 'meta[property="og:description"]',
   ogUrl: 'meta[property="og:url"]',
+  ogImageWidth: 'meta[property="og:image:width"]',
+  ogImageHeight: 'meta[property="og:image:height"]',
+  ogImageType: 'meta[property="og:image:type"]',
+  twitterUrl: 'meta[name="twitter:url"]',
   twitterTitle: 'meta[name="twitter:title"]',
   twitterDescription: 'meta[name="twitter:description"]',
 } as const
@@ -74,6 +80,22 @@ export function useLocalizedSeo(page: PageKey, locale: Locale) {
     upsertMeta('meta[property="og:image"]', {
       property: 'og:image',
       content: image,
+    })
+    upsertMeta(metaSelectors.ogImageWidth, {
+      property: 'og:image:width',
+      content: socialImageWidth,
+    })
+    upsertMeta(metaSelectors.ogImageHeight, {
+      property: 'og:image:height',
+      content: socialImageHeight,
+    })
+    upsertMeta(metaSelectors.ogImageType, {
+      property: 'og:image:type',
+      content: 'image/png',
+    })
+    upsertMeta(metaSelectors.twitterUrl, {
+      name: 'twitter:url',
+      content: url,
     })
     upsertMeta(metaSelectors.twitterTitle, {
       name: 'twitter:title',
