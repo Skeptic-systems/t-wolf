@@ -4,6 +4,7 @@ import { LOCALES, localeLabels } from '../i18n'
 import type { Locale, SiteCopy } from '../i18n'
 import { useLocale } from '../hooks/useLocale'
 import { useLocalizedSeo } from '../hooks/useLocalizedSeo'
+import { SignatureBand } from './SignatureBand'
 
 const contactLinks = {
   email: 'mailto:digitalwerkstatt@t-wolf.it',
@@ -47,6 +48,7 @@ export function HomePage() {
       />
       <main id="main">
         <Hero copy={copy} />
+        <SignatureBand copy={copy} />
         <Recognition copy={copy} />
         <Process copy={copy} />
         <Workshop copy={copy} />

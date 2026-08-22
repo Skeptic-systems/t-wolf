@@ -1403,3 +1403,195 @@ footer a:hover {
     transform: none;
   }
 }
+
+/* --- Signature 3D band --------------------------------------------------- */
+
+.signature {
+  position: relative;
+  padding: 0;
+  border-top: 1px solid var(--line);
+  background: var(--nacht);
+  /* Scroll runway for the camera move: one viewport per act, plus a hold. */
+  height: calc(var(--acts, 3) * 100vh);
+}
+
+.signature-stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: flex-end;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.signature-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.signature-canvas > .signature-poster {
+  position: absolute;
+  inset: 0;
+}
+
+.signature-canvas canvas {
+  position: relative;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.signature-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 62%;
+}
+
+/* Keeps the copy legible over the brightest part of the render. */
+.signature-stage::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      to right,
+      rgba(11, 16, 30, 0.92) 0%,
+      rgba(11, 16, 30, 0.72) 34%,
+      rgba(11, 16, 30, 0) 62%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(11, 16, 30, 0.85) 0%,
+      rgba(11, 16, 30, 0) 26%
+    ),
+    linear-gradient(to top, var(--nacht) 0%, rgba(11, 16, 30, 0) 32%);
+  content: '';
+  pointer-events: none;
+}
+
+.signature-copy {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-bottom: clamp(48px, 9vh, 96px);
+}
+
+.signature-copy h2 {
+  max-width: 16ch;
+}
+
+.signature-acts {
+  display: grid;
+  gap: 0;
+  max-width: 46ch;
+  padding: 0;
+  margin: clamp(24px, 4vh, 40px) 0 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.signature-acts li {
+  padding: 14px 0 14px 20px;
+  border-left: 2px solid var(--line-2);
+  opacity: 0.34;
+  transition:
+    opacity 0.5s ease,
+    border-color 0.5s ease;
+}
+
+.signature-acts li.is-current {
+  border-left-color: var(--orange);
+  opacity: 1;
+}
+
+.signature-act-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--dim);
+  font-family: 'SpaceMono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.signature-acts li.is-current .signature-act-label {
+  color: var(--orange);
+}
+
+.signature-act-line {
+  display: block;
+  max-width: 42ch;
+  color: #c3cbda;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+  .signature {
+    height: calc(var(--acts, 3) * 84vh);
+  }
+
+  .signature-stage {
+    height: 84vh;
+  }
+
+  .signature-stage::after {
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(11, 16, 30, 0.78) 0%,
+        rgba(11, 16, 30, 0.08) 30%
+      ),
+      linear-gradient(to top, var(--nacht) 30%, rgba(11, 16, 30, 0) 62%);
+  }
+
+  .signature-act-line {
+    font-size: 0.95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No camera move to scrub, so the runway collapses to a single screen. */
+  .signature,
+  .signature-stage {
+    height: auto;
+  }
+
+  .signature-stage {
+    position: static;
+    display: block;
+    min-height: 0;
+    padding: clamp(56px, 8vw, 104px) 0;
+    overflow: visible;
+  }
+
+  .signature-canvas {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    max-width: var(--wrap);
+    height: auto;
+    aspect-ratio: 16 / 10;
+    max-height: 56vh;
+    padding: 0 24px;
+    margin: 0 auto 32px;
+  }
+
+  /* Contain, not cover: the poster is a composed shot and cropping it to a
+     letterbox cuts the wolf's head off. The letterbox is invisible anyway
+     because the render background is the same night blue as the page. */
+  .signature-poster {
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .signature-stage::after {
+    display: none;
+  }
+
+  .signature-acts li {
+    opacity: 1;
+  }
+}

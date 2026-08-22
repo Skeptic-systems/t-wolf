@@ -18,13 +18,16 @@
     "check": "prettier --check . && oxlint"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-router": "latest",
     "@tanstack/react-start": "latest",
     "nitro": "3.0.260610-beta",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@tanstack/devtools-vite": "latest",
@@ -34,6 +37,7 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "@types/three": "^0.185.4",
     "@vitejs/plugin-react": "^6.0.1",
     "oxlint": "^1.79.0",
     "prettier": "^3.8.1",

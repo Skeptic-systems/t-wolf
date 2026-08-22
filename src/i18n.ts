@@ -61,6 +61,12 @@ export type SiteCopy = {
     | 'place',
     string
   >
+  signature: {
+    eyebrow: string
+    title: string
+    acts: Array<[string, string]>
+    a11y: string
+  }
   known: { eyebrow: string; title: string; text: string; items: Array<string> }
   process: {
     eyebrow: string
@@ -268,6 +274,25 @@ export const content = {
       role: 'Dipl.-Ing. Thomas Wolfsteiner',
       subtitle: 'Inhaber · Senior-Software-Entwickler',
       place: 'Naturns, Südtirol',
+    },
+    signature: {
+      eyebrow: 'T-Wolf.it',
+      title: 'Technik, die für deinen Betrieb arbeitet.',
+      acts: [
+        [
+          '01 — Wachsam',
+          'Wir behalten im Blick, was dein Betrieb digital wirklich braucht.',
+        ],
+        [
+          '02 — Verbunden',
+          'Website, Social Media und Technik greifen ineinander, statt nebeneinanderher zu laufen.',
+        ],
+        [
+          '03 — In Bewegung',
+          'Und wir bleiben dran, auch wenn die Seite längst online ist.',
+        ],
+      ],
+      a11y: 'Eine metallische Wolfsfigur steht in einem dunklen Studio, umgeben von einem Netz aus leuchtenden Verbindungslinien und Glasflächen.',
     },
     known: {
       eyebrow: 'Kommt dir das bekannt vor',
@@ -664,6 +689,25 @@ export const content = {
       subtitle: 'Owner · Senior software developer',
       place: 'Naturns, South Tyrol',
     },
+    signature: {
+      eyebrow: 'T-Wolf.it',
+      title: 'Technology that works for your business.',
+      acts: [
+        [
+          '01 — Watchful',
+          'We keep an eye on what your business actually needs digitally.',
+        ],
+        [
+          '02 — Connected',
+          'Website, social media and technology work together instead of side by side.',
+        ],
+        [
+          '03 — In motion',
+          'And we stay on it, long after the site has gone live.',
+        ],
+      ],
+      a11y: 'A metallic wolf figure stands in a dark studio, surrounded by a network of glowing connection lines and glass panels.',
+    },
     known: {
       eyebrow: 'Sound familiar',
       title: 'These are the four sentences we hear most often.',
@@ -1012,6 +1056,25 @@ export const content = {
 
 content.it = {
   ...content.en,
+  signature: {
+    eyebrow: 'T-Wolf.it',
+    title: 'Tecnologia che lavora per la tua azienda.',
+    acts: [
+      [
+        '01 — Attenti',
+        'Teniamo d’occhio ciò di cui la tua azienda ha davvero bisogno a livello digitale.',
+      ],
+      [
+        '02 — Collegati',
+        'Sito web, social media e tecnologia lavorano insieme, non uno accanto all’altro.',
+      ],
+      [
+        '03 — In movimento',
+        'E restiamo al tuo fianco, molto dopo che il sito è online.',
+      ],
+    ],
+    a11y: 'Una figura di lupo metallico in uno studio scuro, circondata da una rete di linee luminose e pannelli di vetro.',
+  },
   seo: {
     home: {
       title:

@@ -16,7 +16,18 @@ has no database, no API routes, and no server functions.
 - Nitro Node server output
 - pnpm
 - Docker / Docker Compose
+- Three.js / React Three Fiber for the scroll-driven 3D band
 - Oxlint
+
+## 3D signature band
+
+The home page includes a scroll-driven 3D section between the hero and the
+first content section. It is lazy loaded, so `three` never enters the initial
+bundle, and it degrades to a rendered still for reduced-motion visitors and
+browsers without WebGL.
+
+Assets live in `public/assets/3d/` and are generated from
+`tools/blender/` — see the README there to regenerate them.
 
 ## Development
 
